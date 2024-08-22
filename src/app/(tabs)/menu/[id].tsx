@@ -1,6 +1,6 @@
 import { View, Text, Image, StyleSheet, Pressable } from 'react-native'
 import React, { useState } from 'react'
-import { Stack, useLocalSearchParams } from 'expo-router'
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
 import products from '@/assets/data/products';
 import { defaultPizzaImage } from '@/src/components/ProductListItem';
 import Button from '@/src/components/Button';
@@ -14,6 +14,7 @@ const ProductDetailsScreen = () => {
   const {id} = useLocalSearchParams();
   const product = products.find(p => p.id.toString() === id);
   const {addItem} = useCart();
+  const router = useRouter();
   
   const [selectedSize, setSelectedSize] = useState<PizzaSize>('M');
 
@@ -21,6 +22,7 @@ const ProductDetailsScreen = () => {
     if (!product) return;
 
     addItem(product, selectedSize);
+    router.push('/cart');
   }
 
   if (!product) {
@@ -42,7 +44,7 @@ const ProductDetailsScreen = () => {
           </Pressable>
         ))}
       </View>
-      <Text style={styles.price}>${product.price}</Text>
+      <Text style={styles.price}>${product.price.toFixed(2) }</Text>
       <Button text='Add to cart' onPress={addToCart}/>
     </View>
   )
