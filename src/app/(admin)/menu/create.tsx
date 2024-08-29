@@ -55,7 +55,7 @@ const CreateProductScreen = () => {
     };
 
     const onSubmit = () => {
-        isUpdating ? onUpdate() : onSubmit();
+        isUpdating ? onUpdate() : onCreate();
     };
 
     const onDelete = () => {
