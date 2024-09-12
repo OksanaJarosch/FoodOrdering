@@ -3,39 +3,19 @@ import React, { useState } from 'react';
 import Colors from '@/src/constants/Colors';
 import Button from '@/src/components/Button';
 import { Link } from 'expo-router';
+import { supabase } from '@/src/lib/supabase';
 
 const SignInScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const validateInput = () => {
-        setError('');
+    const onSignIn = async() => {
+        setLoading(true);
+        const {error} = await supabase.auth.signInWithPassword({email, password});
         
-        if (!email) {
-            setError('Email is required');
-            return false;
-        };
-
-        if (!password) {
-            setError('Password is required');
-            return false;
-        };
-
-        return true;
-    };
-
-    const resetFields = () => {
-        setEmail('');
-        setError('');
-    };
-
-    const onSignIn = () => {
-        if(!validateInput()) {
-            return;
-        }
-        console.warn('Sign in');
-        resetFields();
+        if (error) alert(error.message);
+        setLoading(false);
     };
 
     return (
@@ -56,8 +36,7 @@ const SignInScreen = () => {
                 secureTextEntry
             />
 
-            <Text style={styles.error}>{error}</Text>
-            <Button text='Sign in' onPress={onSignIn}/>
+            <Button text={loading ? 'Signing in...' : 'Sign in'} disabled={loading} onPress={onSignIn}/>
             <Link href={'/sign-up'} asChild>
                 <Text style={styles.textBtn}>Create an account</Text>
             </Link>
