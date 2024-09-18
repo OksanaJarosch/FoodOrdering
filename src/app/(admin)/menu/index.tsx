@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Text, View } from 'react-native'; 
 import { ProductListItem } from '@/src/components/ProductListItem';
 import { Stack } from 'expo-router';
 import { useProductList } from '@/src/api/products';
