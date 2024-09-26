@@ -1,6 +1,7 @@
 import { supabase } from "@/src/lib/supabase"
 import { useAuth } from "@/src/providers/AuthProvider";
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {InsertTables} from "@/src/types";
 
 
 
@@ -32,7 +33,11 @@ export const useMyOrderList = () => {
         queryFn: async() => {
             if (!id) return null;
 
-            const {error, data} = await supabase.from('orders').select('*').eq('user_id', id);
+            const { error, data } = await supabase
+                .from('orders')
+                .select('*')
+                .eq('user_id', id)
+                .order('created_at', {ascending: false});
             if (error) {
                 throw new Error(error.message);
             };
@@ -42,15 +47,42 @@ export const useMyOrderList = () => {
 };
 
 //fetch one order
-export const useOrder = (id: number) => {
+export const useOrderDetails = (id: number) => {
     return useQuery({
         queryKey: ['orders', id],
         queryFn: async() => {
-            const {data, error} = await supabase.from('orders').select('*').eq('id', id).single();
+            const { data, error } = await supabase
+                .from('orders')
+                .select('*, order_items(*, products(*))')
+                .eq('id', id)
+                .single();
             if (error) {
                 throw new Error(error.message);
             }
             return data;
         }
+    })
+};
+
+//add order
+export const useInsertOrder = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        async mutationFn(data: InsertTables<'orders'>) {
+            const {data: newOrder, error} = await supabase
+                .from('orders')
+                .insert(data)
+                .select()
+                .single();
+
+                if (error) {
+                    throw new Error(error.message);
+                }
+                return newOrder;
+        },
+        async onSuccess() {
+            await queryClient.invalidateQueries({ queryKey: ['orders'] });
+        },
     })
 };

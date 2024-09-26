@@ -29,7 +29,7 @@ const ProductDetailsScreen = () => {
     return <ActivityIndicator />
   };
 
-  if (error) {
+  if (error || !product) {
     return <Text>Failed to fetch product</Text>
   };
 

@@ -1,4 +1,4 @@
-import { useOrder } from '@/src/api/orders';
+import { useOrderDetails } from '@/src/api/orders';
 import OrderListItem from '@/src/components/OrderListItem';
 import OrdersItem from '@/src/components/OrdersItem';
 import Colors from '@/src/constants/Colors';
@@ -11,7 +11,7 @@ import { View, Text, FlatList, StyleSheet, Pressable, ActivityIndicator } from '
 const OrderDetailsScreen = () => {
     const {id} = useLocalSearchParams();
 
-    const {data: order, isLoading, error} = useOrder(+id);
+    const {data: order, isLoading, error} = useOrderDetails(+id);
 
     if (isLoading) {
         return <ActivityIndicator />

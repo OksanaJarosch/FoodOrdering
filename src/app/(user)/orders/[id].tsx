@@ -1,4 +1,4 @@
-import { useOrder } from '@/src/api/orders';
+import { useOrderDetails } from '@/src/api/orders';
 import OrderListItem from '@/src/components/OrderListItem';
 import OrdersItem from '@/src/components/OrdersItem';
 import { Stack, useLocalSearchParams } from 'expo-router';
@@ -8,13 +8,13 @@ import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-nativ
 
 const OrderDetailsScreen = () => {
     const {id} = useLocalSearchParams();
-    const {data: order, isLoading, error} = useOrder(+id);
+    const {data: order, isLoading, error} = useOrderDetails(+id);
 
     if (isLoading) {
         return <ActivityIndicator />
     };
     
-    if (error) {
+    if (error || !order) {
         return <Text>Failed to fetch order</Text>
     };
 
