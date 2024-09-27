@@ -1,4 +1,4 @@
-import { useOrderDetails } from '@/src/api/orders';
+import { useOrderDetails, useUpdateOrder } from '@/src/api/orders';
 import OrderListItem from '@/src/components/OrderListItem';
 import OrdersItem from '@/src/components/OrdersItem';
 import Colors from '@/src/constants/Colors';
@@ -9,9 +9,15 @@ import { View, Text, FlatList, StyleSheet, Pressable, ActivityIndicator } from '
 
 
 const OrderDetailsScreen = () => {
-    const {id} = useLocalSearchParams();
+    const { id: stringId } = useLocalSearchParams();
+    const id = Number(stringId);
 
-    const {data: order, isLoading, error} = useOrderDetails(+id);
+    const { data: order, isLoading, error } = useOrderDetails(id);
+    const { mutate: updateOrder } = useUpdateOrder();
+
+    const updateStatus = (status: string) => {
+        updateOrder({id, updatedFields: {status}})
+    };
 
     if (isLoading) {
         return <ActivityIndicator />
@@ -42,7 +48,7 @@ const OrderDetailsScreen = () => {
                             {OrderStatusList.map((status) => (
                                 <Pressable
                                     key={status}
-                                    onPress={() => console.warn('Update status')}
+                                    onPress={() => updateStatus(status)}
                                     style={{
                                         borderColor: Colors.light.tint,
                                         borderWidth: 1,
