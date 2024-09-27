@@ -1,14 +1,17 @@
 import { useOrderDetails } from '@/src/api/orders';
+import { useUpdateOrderSubscription } from '@/src/api/orders/subscriptions';
 import OrderListItem from '@/src/components/OrderListItem';
 import OrdersItem from '@/src/components/OrdersItem';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 
 
-
 const OrderDetailsScreen = () => {
-    const {id} = useLocalSearchParams();
-    const {data: order, isLoading, error} = useOrderDetails(+id);
+    const { id: stringId } = useLocalSearchParams();
+    const id = Number(stringId);
+    const {data: order, isLoading, error} = useOrderDetails(id);
+
+    useUpdateOrderSubscription(id);
 
     if (isLoading) {
         return <ActivityIndicator />

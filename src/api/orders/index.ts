@@ -15,7 +15,7 @@ export const useAdminOrderList = ({archived = false}) => {
                 .from('orders')
                 .select('*')
                 .in('status', statuses)
-                //.order('created_at', {ascending: false});
+                .order('created_at', {ascending: false});
             if (error) {
                 console.log(error);
                 
