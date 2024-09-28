@@ -15,8 +15,10 @@ const CreateProductScreen = () => {
     const [image, setImage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    const {id: stringID} = useLocalSearchParams();
-    const id = Number(stringID);
+    const { id: stringId } = useLocalSearchParams();
+    const parsedId = Array.isArray(stringId) ? stringId[0] : stringId;
+    const id = Number(parsedId);
+
     const isUpdating = !!id;
     const router = useRouter();
 

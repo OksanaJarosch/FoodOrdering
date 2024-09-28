@@ -11,8 +11,11 @@ import { useProduct } from '@/src/api/products';
 const sizes: PizzaSize[] = ['S', 'M', 'L', 'XL'];
 
 const ProductDetailsScreen = () => {
-  const {id} = useLocalSearchParams();
-  const {data: product, error, isLoading} = useProduct(+id);
+  const { id: stringId } = useLocalSearchParams();
+  const parsedId = Array.isArray(stringId) ? stringId[0] : stringId;
+  const id = Number(parsedId);
+  
+  const {data: product, error, isLoading} = useProduct(id);
   const {addItem} = useCart();
   const router = useRouter();
   

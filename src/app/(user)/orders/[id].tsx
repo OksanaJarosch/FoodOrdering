@@ -8,7 +8,9 @@ import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-nativ
 
 const OrderDetailsScreen = () => {
     const { id: stringId } = useLocalSearchParams();
-    const id = Number(stringId);
+    const parsedId = Array.isArray(stringId) ? stringId[0] : stringId;
+    const id = Number(parsedId);
+    
     const {data: order, isLoading, error} = useOrderDetails(id);
 
     useUpdateOrderSubscription(id);
