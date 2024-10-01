@@ -7,6 +7,7 @@ import { PizzaSize } from '@/src/types';
 import { FontAwesome } from '@expo/vector-icons';
 import Colors from '@/src/constants/Colors';
 import { useProduct } from '@/src/api/products';
+import RemoteImage from '@/src/components/RemoteImage';
 
 
 const ProductDetailsScreen = () => {
@@ -56,7 +57,11 @@ const ProductDetailsScreen = () => {
                 ),
             }}/>
 
-      <Image source={{uri: product.image || defaultPizzaImage}} style={styles.image}/>
+      <RemoteImage
+        path={product.image}
+        fallback={defaultPizzaImage}
+        style={styles.image}
+      />
       <Text style={styles.itemName}>{product.name }</Text>
       <Text style={styles.price}>${product.price.toFixed(2) }</Text>
 
