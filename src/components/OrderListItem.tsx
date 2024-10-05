@@ -17,8 +17,8 @@ const OrderListItem = ({ order }: OrderListItemProps) => {
         <Link href={`/orders/${order.id}`} asChild>
         <Pressable style={styles.container}>
             <View>
-            <Text style={styles.title}>Order #{order.id}</Text>
-            <Text style={styles.time}>{dayjs(order.created_at).fromNow()}</Text>
+                <Text style={styles.title}>Order #{order.id}</Text>
+                <Text style={styles.time}>{dayjs(order.created_at).fromNow()}</Text>
             </View>
 
             <Text style={styles.status}>{order.status}</Text>

@@ -1,10 +1,12 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { Session } from "@supabase/supabase-js";
+import { Profile } from "../types";
+
 
 type AuthData = {
     session: Session|null;
-    profile: any;
+    profile: Profile|null;
     loading: boolean;
     isAdmin: boolean;
 };
@@ -18,32 +20,55 @@ const AuthContext = createContext<AuthData>({
 
 const AuthProvider = ({children}: PropsWithChildren) => {
     const [session, setSession] = useState<Session|null>(null);
-    const [profile, setProfile] = useState(null);
+    const [profile, setProfile] = useState<Profile|null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
+    // Fn, fetch actual user profile
+    const fetchProfile = async (userId: string) => {
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .single();
+        if (error) {
+            console.error('Error fetching profile:', error);
+            setProfile(null);
+        } else {
+            setProfile(data || null);
+        }
+    };
+    // Fn, fetch session 
         const fetchSession = async () => {
-            const {data: {session}} = await supabase.auth.getSession();
-            setSession(session);
-            
-            if (session) {
-                const {data} = await supabase
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', session.user.id)
-                    .single();
-                setProfile(data || null);
-            };
+        setLoading(true);
+        const { data: { session }, error } = await supabase.auth.getSession();
 
-            setLoading(false);
+        if (error) {
+            console.error("Error fetching session:", error);
         };
+        setSession(session);
+            if (session) {
+            fetchProfile(session.user.id);
+        };
+        setLoading(false);
+    };
+
+    useEffect(() => {
         fetchSession();
 
-        supabase.auth.onAuthStateChange((_event, session) => {
+        const { data: authListener } = supabase.auth.onAuthStateChange( async(_event, session) => {
             setSession(session);
+
+            if (session) {
+                await fetchProfile(session.user.id); // new profile or...
+            } else {
+                setProfile(null); // to avoid remaining old profile in state
+            }
         });
+
+        return () => {
+            authListener?.subscription?.unsubscribe();
+        };
     }, [])
-    
     
     return (
         <AuthContext.Provider value={{session, profile, loading, isAdmin: profile?.group === 'ADMIN'}}>

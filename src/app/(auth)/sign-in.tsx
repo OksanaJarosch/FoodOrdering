@@ -2,7 +2,7 @@ import { StyleSheet, Text, TextInput, View } from 'react-native';
 import React, { useState } from 'react';
 import Colors from '@/src/constants/Colors';
 import Button from '@/src/components/Button';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { supabase } from '@/src/lib/supabase';
 
 const SignInScreen = () => {
@@ -10,10 +10,11 @@ const SignInScreen = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const router = useRouter();
+
     const onSignIn = async() => {
         setLoading(true);
         const {error} = await supabase.auth.signInWithPassword({email, password});
-        
         if (error) alert(error.message);
         setLoading(false);
     };

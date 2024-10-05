@@ -70,13 +70,15 @@ const CreateProductScreen = () => {
             }}
     )};
 
-    const onUpdate = () => {
+    const onUpdate = async() => {
         if(!validateInput()) {
             return;
         };
         setIsLoading(true);
+        const imagePath = await uploadImage();
+
         //add to database
-        updateProduct({ id, name, price: parseFloat(price), image},
+        updateProduct({ id, name, price: parseFloat(price), image: imagePath},
         {onSuccess: () => {
             setIsLoading(false);
             router.back();
