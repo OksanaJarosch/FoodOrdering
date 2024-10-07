@@ -2,6 +2,7 @@ import { createContext, PropsWithChildren, useContext, useEffect, useState } fro
 import { supabase } from "../lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import { Profile } from "../types";
+import { ActivityIndicator } from "react-native";
 
 
 type AuthData = {
@@ -44,10 +45,11 @@ const AuthProvider = ({children}: PropsWithChildren) => {
 
         if (error) {
             console.error("Error fetching session:", error);
-        };
+            };
+            
         setSession(session);
             if (session) {
-            fetchProfile(session.user.id);
+            await fetchProfile(session.user.id);
         };
         setLoading(false);
     };
@@ -70,6 +72,10 @@ const AuthProvider = ({children}: PropsWithChildren) => {
         };
     }, [])
     
+    if (loading) {
+        return <ActivityIndicator />
+    };
+
     return (
         <AuthContext.Provider value={{session, profile, loading, isAdmin: profile?.group === 'ADMIN'}}>
             {children}
