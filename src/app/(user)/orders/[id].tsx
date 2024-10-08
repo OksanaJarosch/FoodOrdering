@@ -1,8 +1,9 @@
 import { useOrderDetails } from '@/src/api/orders';
 import { useUpdateOrderSubscription } from '@/src/api/orders/subscriptions';
+import Button from '@/src/components/Button';
 import OrderListItem from '@/src/components/OrderListItem';
 import OrdersItem from '@/src/components/OrdersItem';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 
 
@@ -11,7 +12,8 @@ const OrderDetailsScreen = () => {
     const parsedId = Array.isArray(stringId) ? stringId[0] : stringId;
     const id = Number(parsedId);
     
-    const {data: order, isLoading, error} = useOrderDetails(id);
+    const { data: order, isLoading, error } = useOrderDetails(id);
+    const router = useRouter();
 
     useUpdateOrderSubscription(id);
 
@@ -34,12 +36,15 @@ const OrderDetailsScreen = () => {
                 renderItem={({item}) => <OrdersItem item={item}/>}
                 contentContainerStyle={{gap: 10}}
             />
+            <Button text='Back to all orders' onPress={ ()  => router.push("/(user)/orders")} />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        justifyContent: 'space-between',
         padding: 16,
         gap: 16,
     },

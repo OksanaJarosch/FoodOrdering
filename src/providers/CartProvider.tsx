@@ -3,9 +3,8 @@ import { CartItem, Tables } from "../types";
 import { randomUUID } from "expo-crypto";
 import { useInsertOrder } from "../api/orders";
 import { useAuth } from "./AuthProvider";
-import { router } from "expo-router";
 import { useInsertOrderItems } from "../api/order-items";
-
+import { useRouter } from "expo-router";
 
 type CartType = {
     items: CartItem[];
@@ -33,6 +32,8 @@ const CartProvider = ({children}: PropsWithChildren ) => {
 
     const {session} = useAuth();
     const userId = session?.user.id;
+
+    const router = useRouter();
 
     //fn for adding to cart
     const addItem = (product: Tables<'products'>, size: CartItem['size']) => {
@@ -88,7 +89,7 @@ const CartProvider = ({children}: PropsWithChildren ) => {
 
         insertOrderItems(orderItems, {onSuccess() {
             clearCart();
-            router.push(`/(user)/orders/${order.id}`);
+            router.replace(`/(user)/orders/${order.id}`);
         }});
         
     }
